@@ -1,0 +1,200 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package betterbogotest;
+
+import static java.lang.System.arraycopy;
+import static java.lang.System.currentTimeMillis;
+import java.util.Random;
+
+/**
+ *
+ * @author Admin
+ */
+public class BetterBogoTest {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) throws InterruptedException {
+        
+        int[] test1 = new int[100];
+        int[] test2 = new int[100];
+        int[] test3 = new int[100];
+        int[] test4 = new int[100];
+        
+        addValues(test1,0,100);
+        arraycopy(test1,0,test2,0,test1.length);
+        arraycopy(test1,0,test3,0,test1.length);
+        arraycopy(test1,0,test4,0,test1.length);
+        
+        long start = currentTimeMillis();
+        betterBogo(test1);
+        long time1 = currentTimeMillis() - start;
+        start = currentTimeMillis();
+        bubbleSort(test2);
+        long time2 = currentTimeMillis() - start;
+        start = currentTimeMillis();
+        selectionSort(test3);
+        long time3 = currentTimeMillis() - start;
+        start = currentTimeMillis();
+        insertionSort(test4);
+        long time4 = currentTimeMillis() - start;
+        
+        System.out.print("BetterBogo:    ");
+        display(test1);
+        System.out.println("Time (ms): " + time1);
+        System.out.print("BubbleSort:    ");
+        display(test2);
+        System.out.println("Time (ms): " + time2);
+        System.out.print("SelectionSort  ");
+        display(test3);
+        System.out.println("Time (ms): " + time3);
+        System.out.print("InsertionSort: ");
+        display(test4);
+        System.out.println("Time (ms): " + time4);
+    }
+    
+    public static void copy(int[] arr1, int[] arr2){
+        for(int i = 0; i < arr1.length; i++){
+            arr2[i] = arr1[i];
+        }
+    }
+    
+    public static void betterBogo(int[] arr){
+        int randCounter = 0;
+        int start = 0;
+        while(start < arr.length){
+            shuffle(arr,start);
+            randCounter++;
+            timer(1);
+            while(arr[start] == findLowest(arr, start)){
+                start++;
+                if(start == arr.length){
+                    return;
+                }
+            }
+        }
+    }
+    
+    public static void shuffle(int[] arr, int start){
+        int[] tempList = new int[arr.length - start];
+        int index = 0;
+        for(int i = start; i < arr.length; i++){
+           tempList[index] = arr[i];
+           index++;
+        }
+        
+        for(int i = 0; i < tempList.length; i++){
+            int j = (int)(Math.random() * (i + 1));
+            int temp = tempList[i];
+            tempList[i] = tempList[j];
+            tempList[j] = temp;
+        }
+        
+        index = 0;
+        for(int i = start; i < arr.length; i++){
+            arr[i] = tempList[index];
+            index++;
+        }
+    }
+    
+    public static int findLowest(int[] arr, int start){
+        int lowest = arr[start];
+        for(int i = start; i < arr.length; i++){
+            if(arr[i] < lowest){
+                lowest = arr[i];
+            }
+        }
+        return lowest;
+    }
+    
+    public static void bubbleSort(int a[])
+    {
+	int temp;
+	int swap = 1; // count
+
+	while (swap > 0)
+	{
+		swap = 0;
+		for (int i = 0; i <= a.length - 2; i++)
+		{
+                    timer(1);
+			if (a[i] > a[i + 1])
+			{
+				temp = a[i];
+				a[i] = a[i + 1];
+				a[i + 1] = temp;
+				swap++;
+			}
+		}
+	}
+	
+    }
+    
+    public static void selectionSort(int a[])
+    {
+            int min; // value
+            int minIndex; // index
+
+            for (int j = 0; j <= a.length - 2; j++)
+            {
+                    min = a[j];
+                    minIndex = j;
+
+                    for (int i = j + 1; i < a.length; i++)
+                    {
+                            if (a[i] < min)
+                            {
+                                    min = a[i];
+                                    minIndex = i;
+                            }
+                    }
+                    a[minIndex] = a[j];
+                    a[j] = min;
+            }
+    }
+
+    public static void insertionSort(int a[])
+    {
+            int key;
+            int j;
+
+            for (int i = 1; i < a.length; i++)
+            {
+                    key = a[i] ; // new card
+                    j = i - 1;
+                    while (j >= 0 && a[j] > key)
+                    {
+                            a[j + 1] = a[j]; // shift
+                            j--;
+                    }
+                    a[j + 1] = key; // insert
+            }
+    }
+    
+    public static void display(int[] arr){
+        for(int i = 0; i < arr.length; i++){
+            System.out.print(arr[i] + " ");
+        }
+    }
+    
+    public static void addValues(int[] arr, int min, int max){
+        Random r = new Random();
+        for(int i = 0; i < arr.length; i++){
+            arr[i] = min + r.nextInt(max);
+        }
+    }
+    
+    public static void timer(int time) {
+        long start;
+        long end = currentTimeMillis() + time;
+        do 
+        {
+          start = currentTimeMillis();
+        } while(start < end);
+        
+    }
+}
